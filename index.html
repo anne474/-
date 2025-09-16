@@ -1,181 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>2주 매출 목표 대시보드</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root {
-      --bg: #0b1020; /* deep navy */
-      --card: #121a2b;
-      --muted: #8ea2c6;
-      --text: #eef2ff;
-      --accent: #6aa6ff;
-      --success: #7ee787;
-      --warning: #ffcc66;
-      --danger: #ff7b72;
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 24px; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
-      background: radial-gradient(1200px 600px at 80% -10%, rgba(106,166,255,.15), transparent), var(--bg);
-      color: var(--text);
-    }
-    .wrap { max-width: 1120px; margin: 0 auto; }
-    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
-    h1 { font-size: clamp(22px, 3vw, 28px); margin: 0; letter-spacing: .2px; }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .toolbar { display:flex; flex-wrap:wrap; gap:12px; padding:16px; align-items:end; }
-    .field { display:flex; flex-direction:column; gap:6px; }
-    .field label { color: var(--muted); font-size: 12px; }
-    input, button, select { background:#0f1526; color:var(--text); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; font-size:14px; outline:none; }
-    input[type="number"] { width: 180px; }
-    input[type="date"] { width: 180px; }
-    button { cursor:pointer; transition: .2s ease; }
-    button.primary { background: linear-gradient(180deg, #1f4eff, #1236d3); border: none; }
-    button.ghost { background: transparent; border:1px dashed rgba(255,255,255,.14); }
-    button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-
-    .grid { display:grid; grid-template-columns: 1.5fr 1fr; gap:16px; margin:16px 0; }
-    @media (max-width: 980px){ .grid { grid-template-columns: 1fr; } }
-
-    .kpis { display:grid; grid-template-columns: repeat(5,1fr); gap:12px; padding:16px; }
-    @media (max-width: 980px){ .kpis { grid-template-columns: repeat(2,1fr); } }
-    .kpi { padding:14px; border-radius:14px; background: #0f1628; border:1px solid rgba(255,255,255,.06); }
-    .kpi h3 { margin:0 0 6px; font-size:12px; color:var(--muted); font-weight:600; }
-    .kpi .v { font-size:20px; font-weight:700; }
-
-    .table { padding:12px; overflow:auto; }
-    table { width:100%; border-collapse:collapse; font-size:14px; }
-    th, td { text-align:right; padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.06); }
-    th { color:var(--muted); font-weight:600; position:sticky; top:0; background: #0f1628; }
-    td:first-child, th:first-child { text-align:center; }
-    td:nth-child(2), th:nth-child(2) { text-align:center; }
-
-    .progress { height: 10px; background:#0f1628; border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
-    .bar { height:100%; width:0; background: linear-gradient(90deg, #2dd4bf, #60a5fa); }
-
-    footer { opacity:.7; font-size:12px; margin-top:12px; text-align:center; }
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #444; padding: 8px; text-align: center; }
+    th { background: #222; }
+    input { background: #222; color: #eee; border: 1px solid #555; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>📊 2주 매출 목표 대시보드 (바이브 코딩 · 한 파일)</h1>
-      <div style="display:flex; gap:8px; align-items:center">
-        <button class="ghost" id="btnExport">데이터 내보내기</button>
-        <input type="file" id="fileImport" accept="application/json" style="display:none" />
-        <button class="ghost" id="btnImport">가져오기</button>
-        <button id="btnReset">초기화</button>
-      </div>
-    </header>
-
-    <div class="card toolbar">
-      <div class="field">
-        <label>🎯 2주 목표 매출</label>
-        <input type="number" id="goal" min="0" step="1000" value="0" />
-      </div>
-      <div class="field">
-        <label>📅 시작일</label>
-        <input type="date" id="startDate" />
-      </div>
-      <div class="field">
-        <label>기간(일)</label>
-        <input type="number" id="days" min="1" max="31" value="14" />
-      </div>
-      <div class="field">
-        <label>&nbsp;</label>
-        <button class="primary" id="btnApply">설정 적용</button>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <canvas id="chart" style="padding:16px"></canvas>
-      </div>
-      <div class="card">
-        <div class="kpis">
-          <div class="kpi"><h3>목표</h3><div class="v" id="kGoal">0</div></div>
-          <div class="kpi"><h3>누적 매출</h3><div class="v" id="kSum">0</div></div>
-          <div class="kpi"><h3>달성률</h3><div class="v" id="kRate">0%</div></div>
-          <div class="kpi"><h3>남은 일수</h3><div class="v" id="kDaysLeft">0</div></div>
-          <div class="kpi"><h3>필요 일일 평균</h3><div class="v" id="kNeed">0</div></div>
-        </div>
-        <div style="padding:0 16px 16px">
-          <div class="progress"><div class="bar" id="progressBar"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card table">
-      <table id="tbl">
-        <thead>
-          <tr>
-            <th>일차</th>
-            <th>날짜</th>
-            <th>실제 매출</th>
-            <th>누적</th>
-            <th>누적 달성률</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <footer>💾 모든 입력은 브라우저 <b>localStorage</b>에 자동 저장됩니다. (삭제/초기화 전까지 유지)</footer>
-  </div>
+  <h2>📊 2주 매출 목표 대시보드</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>일차</th>
+        <th>날짜</th>
+        <th>실제 매출</th>
+        <th>누적</th>
+        <th>누적 달성률</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
 
   <script>
-    const $$ = (sel) => document.querySelector(sel);
-    const pad = (n) => String(n).padStart(2, '0');
-    const fmt = (n) => Number(n||0).toLocaleString('ko-KR');
-    const pct = (x) => (x*100).toFixed(2) + '%';
+    // 👉 요일 변환 함수
+    const DAYS = ['일','월','화','수','목','금','토'];
+    const getKoreanWeekday = (y, m, d) => DAYS[new Date(y, m - 1, d).getDay()];
 
-    const KEY = 'sales-2w-dashboard-v1';
-
+    // 👉 더미 데이터 (기간 14일)
     const state = {
-      goal: 0,
-      startDate: new Date().toISOString().slice(0,10),
+      start: new Date(2025, 8, 16), // 9월 = index 8
       days: 14,
-      sales: [] // length = days
+      sales: []
     };
 
-    function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-    function load(){
-      try { const s = JSON.parse(localStorage.getItem(KEY)); if(s){ Object.assign(state, s); } } catch(e){}
-    }
+    // 👉 포맷 함수
+    const pct = v => (v * 100).toFixed(2) + '%';
+    const fmt = v => v.toLocaleString();
 
-    function initIfNeeded(){
-      if(!Array.isArray(state.sales) || state.sales.length !== Number(state.days)){
-        state.sales = Array.from({length: Number(state.days)}, () => 0);
-      }
-    }
-
-    function buildTable(){
-      const tbody = $$('#tbl tbody');
+    // 👉 렌더링 함수
+    function render() {
+      const tbody = document.getElementById('tbody');
       tbody.innerHTML = '';
       let cum = 0;
-      const goal = Number(state.goal||0);
-      const start = new Date(state.startDate);
+      for (let i = 0; i < state.days; i++) {
+        const d = new Date(state.start);
+        d.setDate(state.start.getDate() + i);
 
-      for(let i=0;i<state.days;i++){
-        const tr = document.createElement('tr');
-        const d = new Date(start); d.setDate(d.getDate()+i);
-        const y = d.getFullYear(), m = pad(d.getMonth()+1), da = pad(d.getDate());
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        const da = d.getDate();
+        const wd = getKoreanWeekday(y, m, da); // 요일 구하기
 
-        const s = Number(state.sales[i]||0);
+        const s = state.sales[i] || 0;
         cum += s;
-        const rate = goal>0 ? cum/goal : 0;
+        const rate = cum / 1800000; // 목표 대비 달성률 (예: 180만)
 
+        const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${i+1}</td>
-          <td>${y}-${m}-${da}</td>
+          <td>${y}-${m}-${da} (${wd})</td>
           <td>
             <input type="number" min="0" step="1000" value="${s}" data-idx="${i}" style="width:140px; text-align:right">
           </td>
@@ -185,120 +73,18 @@
         tbody.appendChild(tr);
       }
 
-      // bind inputs
+      // 입력 이벤트 바인딩
       tbody.querySelectorAll('input[type="number"]').forEach(inp => {
         inp.addEventListener('input', () => {
           const i = Number(inp.dataset.idx);
-          state.sales[i] = Number(inp.value||0);
-          save();
-          render();
+          state.sales[i] = Number(inp.value) || 0;
+          render(); // 다시 렌더링 (누적 반영)
         });
       });
     }
 
-    let chart;
-    function buildChart(){
-      const ctx = $$('#chart');
-      const labels = Array.from({length: state.days}, (_,i) => i+1);
-      const cum = [];
-      let running = 0; state.sales.forEach(v => { running += Number(v||0); cum.push(running); });
-      const goalLine = Array.from({length: state.days}, (_,i) => Number(state.goal||0) * ((i+1)/state.days));
-
-      const data = {
-        labels,
-        datasets: [
-          { label: '누적 매출', data: cum, borderWidth: 2, tension: .25 },
-          { label: '목표 누적선', data: goalLine, borderDash: [6,4], borderWidth: 2 }
-        ]
-      };
-
-      if(chart){ chart.destroy(); }
-      chart = new Chart(ctx, {
-        type: 'line', data,
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#c9d4f4' } } },
-          scales: {
-            x: { ticks: { color: '#a8b4d9' }, grid: { color: 'rgba(255,255,255,.06)'} },
-            y: { ticks: { color: '#a8b4d9' }, grid: { color: 'rgba(255,255,255,.06)'} }
-          }
-        }
-      });
-    }
-
-    function renderKPI(){
-      const total = state.sales.reduce((a,b)=>a+Number(b||0),0);
-      const goal = Number(state.goal||0);
-      const ach = goal>0 ? total/goal : 0;
-
-      const today = new Date();
-      const start = new Date(state.startDate);
-      const elapsed = Math.min(state.days, Math.max(0, Math.floor((today - start)/86400000) + 1));
-      const left = Math.max(0, state.days - elapsed);
-      const remain = Math.max(0, goal - total);
-      const need = left>0 ? Math.ceil(remain/left) : remain;
-
-      $$('#kGoal').textContent = fmt(goal);
-      $$('#kSum').textContent = fmt(total);
-      $$('#kRate').textContent = pct(ach);
-      $$('#kDaysLeft').textContent = left;
-      $$('#kNeed').textContent = fmt(need);
-
-      const bar = $$('#progressBar');
-      bar.style.width = Math.min(100, ach*100) + '%';
-    }
-
-    function applySettings(){
-      state.goal = Number($$('#goal').value || 0);
-      state.startDate = $$('#startDate').value || new Date().toISOString().slice(0,10);
-      const newDays = Number($$('#days').value || 14);
-      if(newDays !== state.days){
-        // resize sales array while keeping existing values
-        const old = state.sales.slice();
-        state.days = newDays;
-        state.sales = Array.from({length:newDays}, (_,i)=> old[i] || 0);
-      }
-      save();
-      render();
-    }
-
-    function render(){
-      initIfNeeded();
-      // reflect controls
-      $$('#goal').value = state.goal;
-      $$('#startDate').value = state.startDate;
-      $$('#days').value = state.days;
-
-      buildTable();
-      buildChart();
-      renderKPI();
-    }
-
-    // Export/Import/Reset
-    $$('#btnExport').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'sales_dashboard_backup.json'; a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    $$('#btnImport').addEventListener('click', ()=> $$('#fileImport').click());
-    $$('#fileImport').addEventListener('change', (e)=>{
-      const f = e.target.files[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = () => { try{ const obj = JSON.parse(reader.result); Object.assign(state, obj); save(); render(); } catch(err){ alert('가져오기 실패: JSON 형식 확인'); } };
-      reader.readAsText(f);
-    });
-
-    $$('#btnReset').addEventListener('click', () => {
-      if(confirm('모든 데이터를 초기화할까요?')){ localStorage.removeItem(KEY); location.reload(); }
-    });
-
-    $$('#btnApply').addEventListener('click', applySettings);
-
-    // boot
-    load(); initIfNeeded(); render();
+    render();
   </script>
 </body>
 </html>
+
