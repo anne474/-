@@ -9,60 +9,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root {
-      --bg: #0b1020; /* deep navy */
-      --card: #121a2b;
-      --muted: #8ea2c6;
-      --text: #eef2ff;
-      --accent: #6aa6ff;
-      --success: #7ee787;
-      --warning: #ffcc66;
-      --danger: #ff7b72;
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 24px; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
-      background: radial-gradient(1200px 600px at 80% -10%, rgba(106,166,255,.15), transparent), var(--bg);
-      color: var(--text);
-    }
-    .wrap { max-width: 1120px; margin: 0 auto; }
-    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
-    h1 { font-size: clamp(22px, 3vw, 28px); margin: 0; letter-spacing: .2px; }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
-    .toolbar { display:flex; flex-wrap:wrap; gap:12px; padding:16px; align-items:end; }
-    .field { display:flex; flex-direction:column; gap:6px; }
-    .field label { color: var(--muted); font-size: 12px; }
-    input, button, select { background:#0f1526; color:var(--text); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; font-size:14px; outline:none; }
-    input[type="number"] { width: 180px; }
-    input[type="date"] { width: 180px; }
-    button { cursor:pointer; transition: .2s ease; }
-    button.primary { background: linear-gradient(180deg, #1f4eff, #1236d3); border: none; }
-    button.ghost { background: transparent; border:1px dashed rgba(255,255,255,.14); }
-    button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-    .grid { display:grid; grid-template-columns: 1.5fr 1fr; gap:16px; margin:16px 0; }
-    @media (max-width: 980px){ .grid { grid-template-columns: 1fr; } }
-    .kpis { display:grid; grid-template-columns: repeat(5,1fr); gap:12px; padding:16px; }
-    @media (max-width: 980px){ .kpis { grid-template-columns: repeat(2,1fr); } }
-    .kpi { padding:14px; border-radius:14px; background: #0f1628; border:1px solid rgba(255,255,255,.06); }
-    .kpi h3 { margin:0 0 6px; font-size:12px; color:var(--muted); font-weight:600; }
-    .kpi .v { font-size:20px; font-weight:700; }
-    .table { padding:12px; overflow:auto; }
-    table { width:100%; border-collapse:collapse; font-size:14px; }
-    th, td { text-align:right; padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.06); }
-    th { color:var(--muted); font-weight:600; position:sticky; top:0; background: #0f1628; }
-    td:first-child, th:first-child { text-align:center; }
-    td:nth-child(2), th:nth-child(2) { text-align:center; }
-    .progress { height: 10px; background:#0f1628; border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
-    .bar { height:100%; width:0; background: linear-gradient(90deg, #2dd4bf, #60a5fa); }
-    footer { opacity:.7; font-size:12px; margin-top:12px; text-align:center; }
+    :root { --bg:#0b1020; --muted:#8ea2c6; --text:#eef2ff; --radius:16px; --shadow:0 12px 30px rgba(0,0,0,.35); }
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:radial-gradient(1200px 600px at 80% -10%, rgba(106,166,255,.15), transparent), var(--bg);color:var(--text)}
+    .wrap{max-width:1120px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+    h1{font-size:clamp(22px,3vw,28px);margin:0}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:12px;padding:16px;align-items:end}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{color:var(--muted);font-size:12px}
+    input,button{background:#0f1526;color:var(--text);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:14px;outline:none}
+    button.primary{background:linear-gradient(180deg,#1f4eff,#1236d3);border:none;cursor:pointer}
+    .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin:16px 0}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:16px}
+    @media (max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}}
+    .kpi{padding:14px;border-radius:14px;background:#0f1628;border:1px solid rgba(255,255,255,.06)}
+    .kpi h3{margin:0 0 6px;font-size:12px;color:var(--muted);font-weight:600}
+    .kpi .v{font-size:20px;font-weight:700}
+    .table{padding:12px;overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{text-align:right;padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+    th{color:var(--muted);font-weight:600;position:sticky;top:0;background:#0f1628}
+    td:first-child,th:first-child{text-align:center}
+    td:nth-child(2),th:nth-child(2){text-align:center}
+    td:nth-child(3),th:nth-child(3){text-align:center}
+    .progress{height:10px;background:#0f1628;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+    .bar{height:100%;width:0;background:linear-gradient(90deg,#2dd4bf,#60a5fa)}
+    footer{opacity:.7;font-size:12px;margin-top:12px;text-align:center}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>📊 2주 매출 목표 대시보드 (바이브 코딩 · 한 파일)</h1>
+      <h1>📊 2주 매출 목표 대시보드 (요일+일자별 목표 지원)</h1>
       <div style="display:flex; gap:8px; align-items:center">
         <button class="ghost" id="btnExport">데이터 내보내기</button>
         <input type="file" id="fileImport" accept="application/json" style="display:none" />
@@ -73,7 +54,7 @@
 
     <div class="card toolbar">
       <div class="field">
-        <label>🎯 2주 목표 매출</label>
+        <label>🎯 총 목표(2주)</label>
         <input type="number" id="goal" min="0" step="1000" value="0" />
       </div>
       <div class="field">
@@ -88,9 +69,11 @@
         <label>&nbsp;</label>
         <button class="primary" id="btnApply">설정 적용</button>
       </div>
+      <div class="field">
+        <label><input type="checkbox" id="evenDist" checked> 목표 균등 분배</label>
+      </div>
     </div>
 
-    <!-- 그래프를 위로 이동 -->
     <div class="card" style="margin:16px 0">
       <canvas id="chart" style="padding:16px"></canvas>
     </div>
@@ -98,7 +81,7 @@
     <div class="grid">
       <div class="card">
         <div class="kpis">
-          <div class="kpi"><h3>목표</h3><div class="v" id="kGoal">0</div></div>
+          <div class="kpi"><h3>총 목표</h3><div class="v" id="kGoal">0</div></div>
           <div class="kpi"><h3>누적 매출</h3><div class="v" id="kSum">0</div></div>
           <div class="kpi"><h3>달성률</h3><div class="v" id="kRate">0%</div></div>
           <div class="kpi"><h3>남은 일수</h3><div class="v" id="kDaysLeft">0</div></div>
@@ -116,7 +99,10 @@
           <tr>
             <th>일차</th>
             <th>날짜</th>
+            <th>요일</th>
+            <th>목표(일별)</th>
             <th>실제 매출</th>
+            <th>격차(실제-목표)</th>
             <th>누적</th>
             <th>누적 달성률</th>
           </tr>
@@ -133,60 +119,78 @@
     const pad = (n) => String(n).padStart(2, '0');
     const fmt = (n) => Number(n||0).toLocaleString('ko-KR');
     const pct = (x) => (x*100).toFixed(2) + '%';
+    const WEEK = ['일','월','화','수','목','금','토'];
 
-    const KEY = 'sales-2w-dashboard-v1';
+    const KEY = 'sales-2w-dashboard-v2';
 
     const state = {
       goal: 0,
       startDate: new Date().toISOString().slice(0,10),
       days: 14,
-      sales: [] // length = days
+      sales: [],        // 실제 매출(일별)
+      dailyTargets: [], // 일자별 목표 (수정 가능)
+      evenDist: true    // 목표 균등 분배 여부
     };
 
     function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-    function load(){
-      try { const s = JSON.parse(localStorage.getItem(KEY)); if(s){ Object.assign(state, s); } } catch(e){}
-    }
+    function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s){ Object.assign(state, s); } }catch(e){} }
 
-    function initIfNeeded(){
+    function ensureLengths(){
       if(!Array.isArray(state.sales) || state.sales.length !== Number(state.days)){
-        state.sales = Array.from({length: Number(state.days)}, () => 0);
+        const old = state.sales.slice();
+        state.sales = Array.from({length:state.days},(_,i)=> old[i] || 0);
+      }
+      if(!Array.isArray(state.dailyTargets) || state.dailyTargets.length !== Number(state.days)){
+        const old = state.dailyTargets.slice();
+        state.dailyTargets = Array.from({length:state.days},(_,i)=> old[i] || 0);
+      }
+      if(state.evenDist){
+        const base = state.goal / state.days || 0;
+        state.dailyTargets = Array.from({length:state.days}, ()=> Math.round(base));
       }
     }
+
+    function dayName(d){ return WEEK[d.getDay()]; }
 
     function buildTable(){
       const tbody = $$('#tbl tbody');
       tbody.innerHTML = '';
-      let cum = 0;
-      const goal = Number(state.goal||0);
+      ensureLengths();
+      let cum = 0; let cumTarget = 0;
       const start = new Date(state.startDate);
 
       for(let i=0;i<state.days;i++){
         const tr = document.createElement('tr');
         const d = new Date(start); d.setDate(d.getDate()+i);
         const y = d.getFullYear(), m = pad(d.getMonth()+1), da = pad(d.getDate());
+        const dow = dayName(d);
 
-        const s = Number(state.sales[i]||0);
-        cum += s;
-        const rate = goal>0 ? cum/goal : 0;
+        const target = Number(state.dailyTargets[i]||0);
+        const actual = Number(state.sales[i]||0);
+        const gap = actual - target;
+        cum += actual; cumTarget += target;
+        const rate = state.goal>0 ? cum/state.goal : 0;
 
         tr.innerHTML = `
           <td>${i+1}</td>
           <td>${y}-${m}-${da}</td>
-          <td>
-            <input type="number" min="0" step="1000" value="${s}" data-idx="${i}" style="width:140px; text-align:right">
-          </td>
+          <td>${dow}</td>
+          <td><input type="number" min="0" step="1000" value="${target}" data-kind="target" data-idx="${i}" style="width:120px;text-align:right"></td>
+          <td><input type="number" min="0" step="1000" value="${actual}" data-kind="actual" data-idx="${i}" style="width:120px;text-align:right"></td>
+          <td>${fmt(gap)}</td>
           <td>${fmt(cum)}</td>
           <td>${pct(rate)}</td>
         `;
         tbody.appendChild(tr);
       }
 
-      // bind inputs
-      tbody.querySelectorAll('input[type="number"]').forEach(inp => {
-        inp.addEventListener('input', () => {
+      tbody.querySelectorAll('input[type="number"]').forEach(inp=>{
+        inp.addEventListener('input',()=>{
           const i = Number(inp.dataset.idx);
-          state.sales[i] = Number(inp.value||0);
+          const kind = inp.dataset.kind;
+          const val = Number(inp.value||0);
+          if(kind==='target'){ state.dailyTargets[i] = val; state.evenDist = false; $$('#evenDist').checked = false; }
+          else { state.sales[i] = val; }
           save();
           render();
         });
@@ -196,31 +200,25 @@
     let chart;
     function buildChart(){
       const ctx = $$('#chart');
-      const labels = Array.from({length: state.days}, (_,i) => i+1);
-      const cum = [];
-      let running = 0; state.sales.forEach(v => { running += Number(v||0); cum.push(running); });
-      const goalLine = Array.from({length: state.days}, (_,i) => Number(state.goal||0) * ((i+1)/state.days));
+      const labels = Array.from({length: state.days}, (_,i)=> i+1);
+      // 누적 실제
+      const cum = []; let r=0; state.sales.forEach(v=>{ r+=Number(v||0); cum.push(r); });
+      // 누적 목표(일별 입력 반영)
+      const goalCum = []; let g=0; state.dailyTargets.forEach(v=>{ g+=Number(v||0); goalCum.push(g); });
+      // 일별 실제(막대)
+      const dailyActual = state.sales.map(v=> Number(v||0));
+      // 일별 목표(막대)
+      const dailyTarget = state.dailyTargets.map(v=> Number(v||0));
 
-      const data = {
-        labels,
-        datasets: [
-          { label: '누적 매출', data: cum, borderWidth: 2, tension: .25 },
-          { label: '목표 누적선', data: goalLine, borderDash: [6,4], borderWidth: 2 }
-        ]
-      };
+      const data = { labels, datasets:[
+        { type:'line', label:'누적 매출', data:cum, borderWidth:2, tension:.25 },
+        { type:'line', label:'누적 목표', data:goalCum, borderDash:[6,4], borderWidth:2 },
+        { type:'bar', label:'일별 매출', data:dailyActual, order:3 },
+        { type:'bar', label:'일별 목표', data:dailyTarget, order:4 }
+      ]};
 
       if(chart){ chart.destroy(); }
-      chart = new Chart(ctx, {
-        type: 'line', data,
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: '#c9d4f4' } } },
-          scales: {
-            x: { ticks: { color: '#a8b4d9' }, grid: { color: 'rgba(255,255,255,.06)'} },
-            y: { ticks: { color: '#a8b4d9' }, grid: { color: 'rgba(255,255,255,.06)'} }
-          }
-        }
-      });
+      chart = new Chart(ctx, { type:'bar', data, options:{ responsive:true, scales:{ x:{ grid:{color:'rgba(255,255,255,.06)'}}, y:{ grid:{color:'rgba(255,255,255,.06)'}} }, plugins:{ legend:{ labels:{ color:'#c9d4f4' } } } } });
     }
 
     function renderKPI(){
@@ -240,30 +238,31 @@
       $$('#kRate').textContent = pct(ach);
       $$('#kDaysLeft').textContent = left;
       $$('#kNeed').textContent = fmt(need);
-
-      const bar = $$('#progressBar');
-      bar.style.width = Math.min(100, ach*100) + '%';
+      $$('#progressBar').style.width = Math.min(100, ach*100) + '%';
     }
 
     function applySettings(){
       state.goal = Number($$('#goal').value || 0);
       state.startDate = $$('#startDate').value || new Date().toISOString().slice(0,10);
       const newDays = Number($$('#days').value || 14);
+      state.evenDist = $$('#evenDist').checked;
       if(newDays !== state.days){
-        const old = state.sales.slice();
+        const oldSales = state.sales.slice();
+        const oldTargets = state.dailyTargets.slice();
         state.days = newDays;
-        state.sales = Array.from({length:newDays}, (_,i)=> old[i] || 0);
+        state.sales = Array.from({length:newDays},(_,i)=> oldSales[i] || 0);
+        state.dailyTargets = Array.from({length:newDays},(_,i)=> oldTargets[i] || 0);
       }
       save();
       render();
     }
 
     function render(){
-      initIfNeeded();
-      // reflect controls
+      ensureLengths();
       $$('#goal').value = state.goal;
       $$('#startDate').value = state.startDate;
       $$('#days').value = state.days;
+      $$('#evenDist').checked = !!state.evenDist;
 
       buildTable();
       buildChart();
@@ -271,30 +270,22 @@
     }
 
     // Export/Import/Reset
-    $$('#btnExport').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+    $$('#btnExport').addEventListener('click',()=>{
+      const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'sales_dashboard_backup.json'; a.click();
-      URL.revokeObjectURL(url);
+      const a = document.createElement('a'); a.href=url; a.download='sales_dashboard_backup.json'; a.click(); URL.revokeObjectURL(url);
     });
-
-    $$('#btnImport').addEventListener('click', ()=> $$('#fileImport').click());
-    $$('#fileImport').addEventListener('change', (e)=>{
-      const f = e.target.files[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = () => { try{ const obj = JSON.parse(reader.result); Object.assign(state, obj); save(); render(); } catch(err){ alert('가져오기 실패: JSON 형식 확인'); } };
-      reader.readAsText(f);
+    $$('#btnImport').addEventListener('click',()=> $$('#fileImport').click());
+    $$('#fileImport').addEventListener('change',(e)=>{
+      const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+      r.onload=()=>{ try{ const obj=JSON.parse(r.result); Object.assign(state,obj); save(); render(); }catch(err){ alert('가져오기 실패: JSON 형식 확인'); } };
+      r.readAsText(f);
     });
-
-    $$('#btnReset').addEventListener('click', () => {
-      if(confirm('모든 데이터를 초기화할까요?')){ localStorage.removeItem(KEY); location.reload(); }
-    });
-
+    $$('#btnReset').addEventListener('click',()=>{ if(confirm('모든 데이터를 초기화할까요?')){ localStorage.removeItem(KEY); location.reload(); } });
     $$('#btnApply').addEventListener('click', applySettings);
 
     // boot
-    load(); initIfNeeded(); render();
+    load(); ensureLengths(); render();
   </script>
 </body>
 </html>
